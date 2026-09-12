@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liderança por Contexto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#132A33;
+    --navy-mid:#1E3B44;
+    --parchment:#EFE7D8;
+    --parchment-dim:#E3D9C4;
+    --brass:#B9893C;
+    --brass-soft:#D9B573;
+    --ink:#1B1A15;
+    --mist:#7E9AA0;
+    --danger:#9C4A3B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,181,115,0.09), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(217,181,115,0.06), transparent 50%),
+      var(--navy-deep);
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+  .stage{
+    width:100%;
+    max-width:640px;
+  }
+  .card{
+    background:var(--parchment);
+    border-top:3px solid var(--brass);
+    padding:40px 36px 36px;
+    position:relative;
+    box-shadow:0 30px 60px rgba(0,0,0,0.35);
+  }
+  @media (max-width:480px){
+    body{padding:14px 10px;align-items:flex-start;}
+    .card{padding:18px 16px 18px;}
+    h1{font-size:26px;margin-bottom:10px;}
+    .lede{font-size:14px;margin-bottom:20px;}
+    .progress{margin-bottom:14px;gap:6px;}
+    .context-label{margin-bottom:4px;font-size:11px;}
+    .context-box{margin-bottom:14px;padding-left:12px;}
+    .context-box p{font-size:14px;line-height:1.4;}
+    .options{gap:7px;margin-bottom:16px;}
+    .option{padding:10px 12px;font-size:13.5px;line-height:1.35;}
+    .btn{padding:11px 18px;font-size:14px;}
+    .score-number{font-size:48px;}
+    .band-label{font-size:17px;}
+    .band-text{font-size:14px;margin-bottom:20px;}
+  }
+  .eyebrow-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:6px;
+  }
+  .brand{
+    font-family:'Work Sans', sans-serif;
+    font-size:13px;
+    letter-spacing:0.02em;
+    color:var(--mist);
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:34px;
+    line-height:1.1;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .lede{
+    font-size:16px;
+    line-height:1.55;
+    color:#3A382F;
+    margin:0 0 28px;
+    max-width:52ch;
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:14px 26px;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .btn:hover:not(:disabled){background:var(--navy-mid);}
+  .btn:active:not(:disabled){transform:translateY(1px);}
+  .btn:disabled{background:#B9B29B;cursor:not-allowed;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--ink);
+  }
+  .btn-ghost:hover{background:rgba(27,26,21,0.06);}
+
+  /* progress */
+  .progress{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:26px;
+  }
+  .tick{
+    width:10px;height:10px;
+    background:var(--parchment-dim);
+    border:1px solid #C9BC9C;
+    transform:rotate(45deg);
+    transition:background 0.25s ease, border-color 0.25s ease;
+  }
+  .tick.done{background:var(--brass);border-color:var(--brass);}
+  .tick.current{background:var(--ink);border-color:var(--ink);}
+  .progress-label{
+    margin-left:auto;
+    font-size:12px;
+    color:var(--mist);
+  }
+
+  .context-box{
+    border-left:3px solid var(--brass);
+    padding:4px 0 4px 16px;
+    margin-bottom:24px;
+  }
+  .context-box p{
+    margin:0;
+    font-size:16px;
+    line-height:1.55;
+    color:#2A2921;
+  }
+  .context-label{
+    font-size:12px;
+    color:var(--mist);
+    margin:0 0 6px;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .option{
+    text-align:left;
+    background:transparent;
+    border:1px solid #C9BC9C;
+    border-left:3px solid #C9BC9C;
+    padding:14px 16px;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    line-height:1.45;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .option:hover{border-color:var(--brass);}
+  .option.selected{
+    border-color:var(--brass);
+    border-left-color:var(--brass);
+    background:rgba(185,137,60,0.10);
+  }
+
+  .nav-row{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+  }
+
+  /* results */
+  .score-display{
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    margin:6px 0 6px;
+  }
+  .score-number{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:64px;
+    line-height:1;
+    color:var(--ink);
+  }
+  .score-max{
+    font-size:17px;
+    color:var(--mist);
+    padding-bottom:8px;
+  }
+  .meter{
+    height:8px;
+    width:100%;
+    background:var(--parchment-dim);
+    border:1px solid #C9BC9C;
+    margin:18px 0 20px;
+    position:relative;
+  }
+  .meter-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--brass), var(--brass-soft));
+    width:0%;
+    transition:width 0.8s ease;
+  }
+  .band-label{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    margin:0 0 10px;
+  }
+  .band-text{
+    font-size:15px;
+    line-height:1.6;
+    color:#3A382F;
+    margin:0 0 28px;
+  }
+  .cta-box{
+    border-top:1px solid #C9BC9C;
+    padding-top:24px;
+  }
+  .cta-note{
+    font-size:13px;
+    color:var(--mist);
+    margin:10px 0 0;
+  }
+  .hidden{display:none !important;}
+  a.btn{display:inline-block;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="card">
+
+    <!-- INTRO -->
+    <section id="screen-intro">
+      <div class="eyebrow-row"><span class="brand">Avaliação de estilo de liderança</span></div>
+      <h1>Liderança por Contexto</h1>
+      <p class="lede">Nenhum estilo de liderança funciona igual em toda situação. Ao longo de 6 cenários, escolha a atitude que você tomaria — e veja o quanto sua leitura de contexto está afiada.</p>
+      <button class="btn" onclick="startQuiz()">Começar avaliação</button>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="screen-quiz" class="hidden">
+      <div class="progress" id="progress"></div>
+      <p class="context-label">Situação</p>
+      <div class="context-box"><p id="question-context"></p></div>
+      <div class="options" id="options"></div>
+      <div class="nav-row">
+        <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Próxima</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="screen-result" class="hidden">
+      <div class="eyebrow-row"><span class="brand">Resultado</span></div>
+      <div class="score-display">
+        <span class="score-number" id="score-number">0</span>
+        <span class="score-max">/ 30</span>
+      </div>
+      <div class="meter"><div class="meter-fill" id="meter-fill"></div></div>
+      <p class="band-label" id="band-label"></p>
+      <p class="band-text" id="band-text"></p>
+      <div class="cta-box">
+        <a class="btn" id="course-link" href="COLOQUE_AQUI_O_LINK_DO_CURSO" target="_blank" rel="noopener">Quero me inscrever no curso</a>
+        <p class="cta-note">Link de inscrição a definir.</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    context: "Uma pessoa acabou de entrar no time e nunca executou esta tarefa antes. Está motivada, mas insegura sobre como fazer certo.",
+    options: [
+      { text: "Explico o passo a passo com clareza, defino prazos curtos e acompanho de perto cada etapa.", weight: 2 },
+      { text: "Explico a tarefa e já abro espaço para ela trazer ideias sobre como executar.", weight: 1 },
+      { text: "Combino apenas os pontos principais e deixo que decida como conduzir.", weight: 1 },
+      { text: "Delego a tarefa por completo e cobro apenas o resultado final.", weight: 1 }
+    ]
+  },
+  {
+    context: "Já na segunda semana, essa pessoa entende o básico da tarefa, mas ainda erra detalhes e hesita antes de agir sozinha.",
+    options: [
+      { text: "Assumo o controle total de novo, como se fosse o primeiro dia.", weight: 1 },
+      { text: "Continuo explicando o porquê de cada decisão, mas já pergunto o que ela faria antes de dar a resposta.", weight: 2 },
+      { text: "Deixo que decida sozinha e só reviso o resultado final.", weight: 1 },
+      { text: "Delego a próxima entrega inteira, sem checkpoints.", weight: 1 }
+    ]
+  },
+  {
+    context: "Um colaborador domina tecnicamente a função, mas voltou desanimado depois de um feedback duro recebido de outro gestor.",
+    options: [
+      { text: "Volto a dar instruções detalhadas, como se ele precisasse reaprender o trabalho.", weight: 1 },
+      { text: "Explico de novo os processos técnicos, mesmo sabendo que ele já os domina.", weight: 1 },
+      { text: "Escuto o que está pesando, reconheço a competência dele e decidimos juntos os próximos passos.", weight: 2 },
+      { text: "Deixo totalmente por conta dele, sem abrir espaço para conversar sobre o momento.", weight: 1 }
+    ]
+  },
+  {
+    context: "Uma pessoa da equipe entrega com consistência há meses, antecipa problemas e raramente precisa de ajuda.",
+    options: [
+      { text: "Mantenho reuniões diárias de acompanhamento detalhado, como faço com quem está começando.", weight: 1 },
+      { text: "Sigo negociando cada decisão em conjunto antes de ela agir.", weight: 1 },
+      { text: "Ofereço apoio emocional frequente, mesmo sem sinal de que ela precise disso agora.", weight: 1 },
+      { text: "Defino o resultado esperado e dou autonomia total sobre como chegar lá.", weight: 2 }
+    ]
+  },
+  {
+    context: "Um prazo crítico surgiu de última hora e um erro pode gerar prejuízo real, mesmo a equipe sendo experiente.",
+    options: [
+      { text: "Aproveito para desenvolver autonomia e deixo o time definir sozinho como agir.", weight: 1 },
+      { text: "Abro uma longa negociação sobre como cada um prefere conduzir sua parte.", weight: 1 },
+      { text: "Assumo o comando direto da situação, dou instruções claras e defino prioridades imediatas.", weight: 2 },
+      { text: "Ofereço apoio emocional ao grupo, mas não entro nos detalhes operacionais.", weight: 1 }
+    ]
+  },
+  {
+    context: "A empresa mudou um processo importante. A equipe é experiente, mas está insegura e ansiosa com o novo modelo de trabalho.",
+    options: [
+      { text: "Dou instruções rígidas sobre o novo processo, sem abrir espaço para dúvidas ou opiniões.", weight: 1 },
+      { text: "Reconheço a experiência do time, escuto as inseguranças e construímos juntos a adaptação ao novo processo.", weight: 2 },
+      { text: "Delego a adaptação inteira ao time, sem me envolver no processo de mudança.", weight: 1 },
+      { text: "Trato a situação como se ninguém tivesse experiência prévia nenhuma.", weight: 1 }
+    ]
+  }
+];
+
+let current = 0;
+let selected = new Array(questions.length).fill(null);
+
+function startQuiz(){
+  document.getElementById('screen-intro').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderProgress(){
+  const wrap = document.getElementById('progress');
+  wrap.innerHTML = '';
+  for(let i=0;i<questions.length;i++){
+    const t = document.createElement('span');
+    t.className = 'tick' + (i<current?' done':'') + (i===current?' current':'');
+    wrap.appendChild(t);
+  }
+  const label = document.createElement('span');
+  label.className = 'progress-label';
+  label.textContent = 'Pergunta ' + (current+1) + ' de ' + questions.length;
+  wrap.appendChild(label);
+}
+
+function renderQuestion(){
+  renderProgress();
+  const q = questions[current];
+  document.getElementById('question-context').textContent = q.context;
+  const optWrap = document.getElementById('options');
+  optWrap.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const b = document.createElement('button');
+    b.className = 'option' + (selected[current]===idx ? ' selected' : '');
+    b.textContent = opt.text;
+    b.onclick = () => selectOption(idx);
+    optWrap.appendChild(b);
+  });
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = selected[current] === null;
+  nextBtn.textContent = current === questions.length - 1 ? 'Ver resultado' : 'Próxima';
+}
+
+function selectOption(idx){
+  selected[current] = idx;
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(selected[current] === null) return;
+  if(current < questions.length - 1){
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-result').classList.remove('hidden');
+
+  let raw = 0;
+  questions.forEach((q, i) => {
+    raw += q.options[selected[i]].weight;
+  });
+
+  const minRaw = questions.length * 1;
+  const maxRaw = questions.length * 2;
+  const score = Math.round(1 + (raw - minRaw) * (29 / (maxRaw - minRaw)));
+
+  document.getElementById('score-number').textContent = score;
+  document.getElementById('meter-fill').style.width = (score/30*100) + '%';
+
+  let band, text;
+  if(score <= 10){
+    band = 'Leitura de contexto em construção';
+    text = 'Você ainda tende a repetir um mesmo estilo de liderança independente da situação. Entender quando ser mais diretivo, mais apoiador ou mais delegador é justamente o que separa quem lidera pessoas de quem só lidera tarefas.';
+  } else if(score <= 20){
+    band = 'Leitura de contexto em desenvolvimento';
+    text = 'Você já percebe que o contexto importa e acerta em parte das situações, mas ainda hesita em alguns cenários — principalmente quando maturidade técnica e momento emocional da pessoa não caminham juntos.';
+  } else {
+    band = 'Leitura de contexto consistente';
+    text = 'Você lê bem o momento de cada pessoa e ajusta seu estilo de acordo com a situação, não com o piloto automático. Aprofundar essa habilidade é o que vai te diferenciar em cenários mais complexos de liderança.';
+  }
+  document.getElementById('band-label').textContent = band;
+  document.getElementById('band-text').textContent = text;
+}
+</script>
+
+</body>
+</html>
